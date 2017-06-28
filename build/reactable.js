@@ -891,6 +891,18 @@ window.ReactDOM["default"] = window.ReactDOM;
                 this.props.onPageChange(this.props.currentPage + 1);
             }
         }, {
+            key: 'handleFirst',
+            value: function handleFirst(e) {
+                e.preventDefault();
+                this.props.onPageChange(0);
+            }
+        }, {
+            key: 'handleLast',
+            value: function handleLast(e) {
+                e.preventDefault();
+                this.props.onPageChange(this.props.numPages - 1);
+            }
+        }, {
             key: 'handlePageButton',
             value: function handlePageButton(page, e) {
                 e.preventDefault();
@@ -899,28 +911,58 @@ window.ReactDOM["default"] = window.ReactDOM;
         }, {
             key: 'renderPrevious',
             value: function renderPrevious() {
-                if (this.props.currentPage > 0) {
-                    return _react['default'].createElement(
-                        'a',
-                        { className: 'reactable-previous-page',
-                            href: pageHref(this.props.currentPage - 1),
-                            onClick: this.handlePrevious.bind(this) },
-                        this.props.previousPageLabel || 'Previous'
-                    );
-                }
+                var disabled = this.props.currentPage === 0;
+                var modClass = disabled ? ' reactable-disabled-page' : '';
+
+                return _react['default'].createElement(
+                    'a',
+                    { className: 'reactable-previous-page' + modClass,
+                        href: pageHref(this.props.currentPage - 1),
+                        onClick: !disabled && this.handlePrevious.bind(this) },
+                    this.props.previousPageLabel || 'Previous'
+                );
             }
         }, {
             key: 'renderNext',
             value: function renderNext() {
-                if (this.props.currentPage < this.props.numPages - 1) {
-                    return _react['default'].createElement(
-                        'a',
-                        { className: 'reactable-next-page',
-                            href: pageHref(this.props.currentPage + 1),
-                            onClick: this.handleNext.bind(this) },
-                        this.props.nextPageLabel || 'Next'
-                    );
-                }
+                var disabled = this.props.currentPage === this.props.numPages - 1;
+                var modClass = disabled ? ' reactable-disabled-page' : '';
+
+                return _react['default'].createElement(
+                    'a',
+                    { className: 'reactable-next-page' + modClass,
+                        href: pageHref(this.props.currentPage + 1),
+                        onClick: !disabled && this.handleNext.bind(this) },
+                    this.props.nextPageLabel || 'Next'
+                );
+            }
+        }, {
+            key: 'renderFirst',
+            value: function renderFirst() {
+                var disabled = this.props.currentPage === 0;
+                var modClass = disabled ? ' reactable-disabled-page' : '';
+
+                return _react['default'].createElement(
+                    'a',
+                    { className: 'reactable-first-page' + modClass,
+                        href: pageHref(0),
+                        onClick: !disabled && this.handleFirst.bind(this) },
+                    this.props.firstPageLabel || 'First'
+                );
+            }
+        }, {
+            key: 'renderLast',
+            value: function renderLast() {
+                var disabled = this.props.currentPage === this.props.numPages - 1;
+                var modClass = disabled ? ' reactable-disabled-page' : '';
+
+                return _react['default'].createElement(
+                    'a',
+                    { className: 'reactable-last-page' + modClass,
+                        href: pageHref(this.props.numPages - 1),
+                        onClick: !disabled && this.handleLast.bind(this) },
+                    this.props.lastPageLabel || 'Last'
+                );
             }
         }, {
             key: 'renderPageButton',
@@ -988,9 +1030,15 @@ window.ReactDOM["default"] = window.ReactDOM;
                         _react['default'].createElement(
                             'td',
                             { colSpan: this.props.colSpan },
-                            this.renderPrevious(),
-                            pageButtons,
-                            this.renderNext()
+                            _react['default'].createElement(
+                                'div',
+                                null,
+                                this.renderFirst(),
+                                this.renderPrevious(),
+                                pageButtons,
+                                this.renderNext(),
+                                this.renderLast()
+                            )
                         )
                     )
                 );

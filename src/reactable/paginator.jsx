@@ -15,29 +15,63 @@ export class Paginator extends React.Component {
         this.props.onPageChange(this.props.currentPage + 1);
     }
 
+    handleFirst(e) {
+        e.preventDefault()
+        this.props.onPageChange(0)
+    }
+
+    handleLast(e) {
+        e.preventDefault()
+        this.props.onPageChange(this.props.numPages - 1);
+    }
+
     handlePageButton(page, e) {
         e.preventDefault();
         this.props.onPageChange(page);
     }
 
     renderPrevious() {
-        if(this.props.currentPage > 0) {
-            return <a className='reactable-previous-page'
-                      href={pageHref(this.props.currentPage - 1)}
-                      onClick={this.handlePrevious.bind(this)}>
-                        {this.props.previousPageLabel || 'Previous'}
-                   </a>
-        }
+        const disabled = this.props.currentPage === 0;
+        const modClass = disabled ? ' reactable-disabled-page' : '';
+
+        return <a className= { 'reactable-previous-page'  + modClass }
+                  href={pageHref(this.props.currentPage - 1)}
+                  onClick={ !disabled && this.handlePrevious.bind(this)}>
+                    {this.props.previousPageLabel || 'Previous'}
+               </a>
     }
 
     renderNext() {
-        if(this.props.currentPage < this.props.numPages - 1) {
-            return <a className='reactable-next-page'
-                      href={pageHref(this.props.currentPage + 1)}
-                      onClick={this.handleNext.bind(this)}>
-                      {this.props.nextPageLabel || 'Next'}
-                   </a>
-        }
+        const disabled = this.props.currentPage === (this.props.numPages - 1);
+        const modClass = disabled ? ' reactable-disabled-page' : '';
+
+        return <a className= { 'reactable-next-page'  + modClass }
+                  href={pageHref(this.props.currentPage + 1)}
+                  onClick={ !disabled && this.handleNext.bind(this)}>
+                    {this.props.nextPageLabel || 'Next'}
+               </a>
+    }
+
+    renderFirst() {
+        const disabled = this.props.currentPage === 0;
+        const modClass = disabled ? ' reactable-disabled-page' : '';
+
+        return <a className= { 'reactable-first-page'  + modClass }
+                  href={pageHref(0)}
+                  onClick={ !disabled && this.handleFirst.bind(this)}>
+                    {this.props.firstPageLabel || 'First'}
+               </a>
+    }
+
+    renderLast() {
+        const disabled = this.props.currentPage === (this.props.numPages - 1);
+        const modClass = disabled ? ' reactable-disabled-page' : '';
+
+        return <a className= { 'reactable-last-page' + modClass }
+                  href={pageHref(this.props.numPages - 1)}
+                  onClick={ !disabled && this.handleLast.bind(this)}>
+                    {this.props.lastPageLabel || 'Last'}
+               </a>
     }
 
     renderPageButton(className, pageNum) {
@@ -96,13 +130,16 @@ export class Paginator extends React.Component {
             <tbody className="reactable-pagination">
                 <tr>
                     <td colSpan={this.props.colSpan}>
-                        {this.renderPrevious()}
-                        {pageButtons}
-                        {this.renderNext()}
+                        <div>
+                            {this.renderFirst()}
+                            {this.renderPrevious()}
+                            {pageButtons}
+                            {this.renderNext()}
+                            {this.renderLast()}
+                        </div>
                     </td>
                 </tr>
             </tbody>
         );
     }
 };
-
